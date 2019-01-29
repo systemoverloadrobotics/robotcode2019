@@ -26,11 +26,11 @@ class Robot : public frc::TimedRobot {
   }
 
   void RobotInit() override {
-    encoder.SetDistancePerPulse((kPi * 6) / 360.0);
+    encoder1.SetDistancePerPulse((kPi * 6) / 360.0);
   }
 
   void RobotPeriodic() override {
-    frc::SmartDashboard::PutNumber("Encoder", encoder.GetDistance());
+    frc::SmartDashboard::PutNumber("Encoder", encoder1.GetDistance());
   }
 
   void AutonomousInit() override {
@@ -49,35 +49,35 @@ class Robot : public frc::TimedRobot {
     }
   }
 
-  void TeleopInit() override {}
+  void TeleopInit() override {
+    encoder1.Reset();
+  }
 
   void TeleopPeriodic() override {
     //Drive
     Drive.ArcadeDrive(gamePad.GetRawAxis(4), gamePad.GetRawAxis(5));
-
-    //Elevator Lift(Set to axis but need to program in the 2 hights for the holes)
+    //Elevator Lift(Set to axis but need to program in the 2 hights for the holes and 1 for bottom/rest)
+    //No idea is this works... need to reconfigure for the right bases
     if (gamePad.GetRawButton(5) == 1) {
-      m_firstLayer.Set(1);
-      //Add encoder for a set distance
+      encoder1.Reset();
+      while (encoder1.GetDistance() > 5) {
+        m_firstLayer.Set(.5);
+      }     
+    } else if (gamePad.GetRawButton(6) == 1) {
+      encoder1.Reset();
+      while (encoder1.GetDistance() > 10) {
+        m_secondLayer.Set(.5);
+      }
     } else {
-      m_firstLayer.Set(-1);
-      //Add encoder for a set distance, oppisite to what what above
+      while (encoder1.GetDistance() > .01) {
+      m_secondLayer.Set(-.5);
+      }
     }
-
-    if (gamePad.GetRawButton(6) == 1) {
-      m_secondLayer.Set(1);
-      //Add encoder for a set distance
-    } else {
-      m_secondLayer.Set(-1);
-      //Add encoder for a set distance, oppisite to what what above
-    }
-
     //HAB lift  
     m_frontLift.Set(gamePad.GetRawAxis(2));
     m_backLift.Set(gamePad.GetRawAxis(3));
     //Ball Holder Thinging
     m_ball.Set(gamePad.GetRawAxis(0));
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Solenoids for Panel Grabber(I think is done but I have not tested it yet)
     if (gamePad.GetRawButton(panelGrabberForward) == 1) {
       s_panelGrabber.Set(frc::DoubleSolenoid::kForward);
@@ -87,7 +87,6 @@ class Robot : public frc::TimedRobot {
     else {
       s_panelGrabber.Set(frc::DoubleSolenoid::kOff);
     }
-
     //Solenoids for Panel Launcher  
     if (gamePad.GetRawButton(panelLauncherForward) == 1) {
       s_panelLauncher.Set(frc::DoubleSolenoid::kForward);
@@ -102,7 +101,7 @@ class Robot : public frc::TimedRobot {
   //Declartions
   frc::Joystick gamePad{0};
   frc::Timer timer;
-  frc::Encoder encoder{0, 1};
+  frc::Encoder encoder1{0, 1};
   frc::LiveWindow& m_lw = *frc::LiveWindow::GetInstance();
 
   //Motors
