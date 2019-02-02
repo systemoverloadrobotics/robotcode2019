@@ -12,11 +12,19 @@
 
 class Robot : public frc::TimedRobot {
   public:
+    Robot() {
+      forkLiftEncoder.SetSamplesToAverage(5);
+      //Assuming 1 rotation = 100 cm and 1024 pulses per revolution
+      forkLiftEncoder.SetDistancePerPulse(100/1024);
+      forkLiftEncoder.SetMinRate(0);
+      //Time in seconds before considered stop (i think??)
+      forkLiftEncoder.SetMaxPeriod(1000.0);
+    }
     void teleopInit() override {
-    forkLiftEncoder
+      
     };
     
-    void teleopPeriodic() {
+    void teleopPeriodic() override{
      if (gamePad.GetRawButton(0) == True) {
       while (forkLiftEncoder.GetDistance > 5) {
         m_forkLift.Set(.5);
@@ -26,10 +34,16 @@ class Robot : public frc::TimedRobot {
         m_forkLift.Set(-.5);
       }
     }
+      // Retrieve the displacement of first the Encoder
+      frc::SmartDashboard::PutNumber("Encoder1 Distance: ", encoder1.GetDistance());
+
+      // Retrieve the current rate of the first encoder.
+      // Rate = DistancePerPulse/Period
+      frc::SmartDashboard::PutNumber("Encoder1 Rate cm/s: ", encoder1.GetRate());
     };
   private:
   frc::Joystick gamePad{0};
-  frc::Encoder forkLiftEncoder{0, 1};
+  frc::Encoder forkLiftEncoder{0, 1, false, frc::Encoder::k4X};
   frc::PWMVictorSPX m_forkLift{4};
 };
 
