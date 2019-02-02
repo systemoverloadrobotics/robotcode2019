@@ -13,7 +13,11 @@
 class Robot : public frc::TimedRobot {
   public:
     void teleopInit() override {
-    if (gamePad.GetRawButton(0) == True) {
+    forkLiftEncoder
+    };
+    
+    void teleopPeriodic() {
+     if (gamePad.GetRawButton(0) == True) {
       while (forkLiftEncoder.GetDistance > 5) {
         m_forkLift.Set(.5);
       }
