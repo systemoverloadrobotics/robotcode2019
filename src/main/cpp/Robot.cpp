@@ -8,7 +8,7 @@
 #include "Robot.h"
 
 #include <iostream>
-
+#include <frc/DoubleSolenoid.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
