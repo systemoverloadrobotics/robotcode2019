@@ -1,1 +1,12 @@
+#include <frc/Joystick.h>
+#include <frc/PWMVictorSPX.h>
+#include <frc/TimedRobot.h>
+#include <frc/Timer.h>
+#include <frc/drive/DifferentialDrive.h>
+#include <frc/livewindow/LiveWindow.h>
+#include <frc/SpeedControllerGroup.h>
+#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
+#include <frc/Encoder.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
