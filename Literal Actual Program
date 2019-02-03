@@ -1,3 +1,137 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+//Pins and Controller input are not final, must change before testing/make a remote map
+/*Game Pad Mapping(This starts at 1, might have to shift everything to start at 0)
+Axis:
+Left Stick X  = 0 (Drivebase)
+Left Stick Y  = 1 (Drivebase)
+Left Trigger  = 2 (Back HAB Lift)
+Right Trigger = 3 (Front HAB Lift)
+Right Stick X = 4 ()
+Right Stick Y = 5 ()
+
+Button:
+A = 0 (First Layer of Forklift)
+B = 1 (Second Layer of Forklift)
+X = 2 (Grab Ball)
+Y = 3 (Launch Ball)
+Left Trigger  = 4 (Grab Panel)
+Right Trigger = 5 (Launch Panel)
+Options? = 6
+Start?  =  7
+Left Stick  = 8
+Right Stick = 9
+*/
+#include <frc/Joystick.h>
+#include <frc/TimedRobot.h>
+#include <frc/PWMVictorSPX.h>
+#include <frc/drive/DifferentialDrive.h>
+#include <frc/SpeedControllerGroup.h>
+#include <frc/DoubleSolenoid.h>
+#include <frc/Solenoid.h>
+#include <frc/Compressor.h>
+
+class Robot : public frc::TimedRobot {
+ public:
+  Robot() {}
+
+  void RobotInit() override {}
+  void RobotPeriodic() override {}
+  void AutonomousInit() override {}
+  void AutonomousPeriodic() override {}
+
+  void TeleopInit() override {
+  compressor1.Start();
+  }
+
+  void TeleopPeriodic() override {
+    //Drivebase
+    Drive.ArcadeDrive(throttle.GetRawAxis(1), wheel.GetRawAxis(0)); //Don't know what axis, 1 and 0 are just filler
+    //Forlift (Untested)
+    if (xbox.GetRawButton(1) == 1) {
+      m_forklift.Set(xbox.GetRawAxis(1) / 5);
+    } else if (xbox.GetRawButton(1) == 0) {
+      m_forklift.Set(xbox.GetRawAxis(1));
+    } else {
+      m_forklift.Set(xbox.GetRawAxis(1));
+    }
+    //Ball Intake (Works)
+    m_leftIntake.Set(xbox.GetRawAxis(5) / 3); //devide 3 only there for now since we don't have the 2nd gearbox
+    m_rightIntake.Set(xbox.GetRawAxis(5));
+
+    //The Hatch Panel Getter/Grabber (Untested)
+    //???? X or Y maybe
+    if (xbox.GetRawButton(panelGetterForward) == 1) {
+      s_panelGetter.Set(frc::DoubleSolenoid::kForward);
+    } else if (xbox.GetRawButton(panelLauncherReverse) == 0) {
+      s_panelGetter.Set(frc::DoubleSolenoid::kReverse);
+    } //I do not know if I will need the else or if I shoudl change the else if to an else statement
+    else {
+      s_panelLauncher.Set(frc::DoubleSolenoid::kOff);
+    }
+    //The Hatch Panel Launcher (Works)
+    //A button
+    if (xbox.GetRawButton(panelLauncherForward) == 1) {
+      s_panelLauncher.Set(frc::DoubleSolenoid::kForward);
+    } else if (xbox.GetRawButton(panelLauncherReverse) == 0) {
+      s_panelLauncher.Set(frc::DoubleSolenoid::kReverse);
+    }
+    else {
+      s_panelLauncher.Set(frc::DoubleSolenoid::kOff);
+    }
+  }
+
+ private:
+  //Declartions
+  frc::Joystick xbox{1};
+  frc::Joystick wheel{2}; //Don't know what port, 1 is filler
+  frc::Joystick throttle{3}; //Don't know what port, 2 is filler
+  frc::Compressor compressor1;
+  //Motors
+  //Drivebase
+  frc::PWMVictorSPX m_frontLeft{0};
+  frc::PWMVictorSPX m_backLeft{1};
+  frc::PWMVictorSPX m_frontRight{2};
+  frc::PWMVictorSPX m_backRight{3};
+  //Ball Intake
+  frc::PWMVictorSPX m_leftIntake{4}; //No Gearbox Currently
+  frc::PWMVictorSPX m_rightIntake{5};
+  //Forlift
+  frc::PWMVictorSPX m_forklift{6};
+  //Groups
+  //Drivebase
+  frc::SpeedControllerGroup m_left{m_frontLeft, m_backLeft};
+  frc::SpeedControllerGroup m_right{m_frontRight, m_backRight}; 
+  //Setting Drive
+  frc::DifferentialDrive Drive{m_left, m_right};
+
+  //Pneumatics/Solenoids
+  //Hatch Panel Launcher (Works)
+  /*frc::DoubleSolenoid s_panelLauncher{0, 1};
+  static constexpr int panelLauncherForward = 1;
+  static constexpr int panelLauncherReverse = 2;*/
+  // test on triggers(untested)
+  frc::DoubleSolenoid s_panelLauncher{0, 1};
+  static constexpr int panelLauncherForward = 5;
+  static constexpr int panelLauncherReverse = 1;
+  //Hatch Panel Getter "trigger" (Untested)
+  frc::DoubleSolenoid s_panelGetter{2, 3};
+  static constexpr int panelGetterForward = 4;
+  static constexpr int panelGetterReverse = 2;
+};
+
+#ifndef RUNNING_FRC_TESTS
+int main() { return frc::StartRobot<Robot>(); }
+#endif
+
+
+
+/*
 #include <frc/Joystick.h>
 #include <frc/PWMVictorSPX.h>
 #include <frc/TimedRobot.h>
@@ -50,3 +184,4 @@ class Robot : public frc::TimedRobot {
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
 #endif
+*/
