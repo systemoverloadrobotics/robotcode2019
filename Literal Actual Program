@@ -5,28 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-/*
-XBox
-Axis:
-Left Stick X  = 1 
-Left Stick Y  = 2 
-Left Trigger  = 3 
-Right Trigger = 4 
-Right Stick X = 5 
-Right Stick Y = 6 
-
-Button:
-A = 1 
-B = 2 
-X = 3 
-Y = 4 
-Left Trigger  = 5 
-Right Trigger = 6 
-Options? = 7
-Start?  =  8
-Left Stick  = 9
-Right Stick = 10
-*/
 #include <frc/Joystick.h>
 #include <frc/TimedRobot.h>
 #include <frc/PWMVictorSPX.h>
@@ -159,57 +137,3 @@ class Robot : public frc::TimedRobot {
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
 #endif
-/*
-#include <frc/Joystick.h>
-#include <frc/PWMVictorSPX.h>
-#include <frc/TimedRobot.h>
-#include <frc/Timer.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/livewindow/LiveWindow.h>
-#include <frc/SpeedControllerGroup.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/Solenoid.h>
-#include <frc/Encoder.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-
-class Robot : public frc::TimedRobot {
-  public:
-    Robot() {
-      forkLiftEncoder.SetSamplesToAverage(5);
-      //Assuming 1 rotation = 100 cm and 1024 pulses per revolution
-      forkLiftEncoder.SetDistancePerPulse(100/1024);
-      forkLiftEncoder.SetMinRate(0);
-      //Time in seconds before considered stop (i think??)
-      forkLiftEncoder.SetMaxPeriod(1000.0);
-    }
-    void teleopInit() override {
-      
-    };
-    
-    void teleopPeriodic() override{
-     if (gamePad.GetRawButton(0) == True) {
-      while (forkLiftEncoder.GetDistance > 5) {
-        m_forkLift.Set(.5);
-      }
-    } else if (gamePad.GetRawButton(0) == False){
-      while (forkLiftEncoder.GetDistance < 0) {
-        m_forkLift.Set(-.5);
-      }
-    }
-      // Retrieve the displacement of first the Encoder
-      frc::SmartDashboard::PutNumber("Encoder1 Distance: ", encoder1.GetDistance());
-
-      // Retrieve the current rate of the first encoder.
-      // Rate = DistancePerPulse/Period
-      frc::SmartDashboard::PutNumber("Encoder1 Rate cm/s: ", encoder1.GetRate());
-    };
-  private:
-  frc::Joystick gamePad{0};
-  frc::Encoder forkLiftEncoder{0, 1, false, frc::Encoder::k4X};
-  frc::PWMVictorSPX m_forkLift{4};
-};
-
-#ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
-#endif
-*/
