@@ -1,3 +1,50 @@
+bool prevState = false;
+bool currState = false;
+bool driveTankMode = false;
+
+while (IsOperatorControl())
+{
+    //
+    // Check for button 6 press.
+    //
+    currState = secondaryController->GetRawButton(6);
+    if (currState != prevState)
+    {
+        if (currState)
+        {
+            //
+            // Button has been pressed.
+            //
+            driveTankMode = !driveTankMode;
+        }
+        else
+        {
+            //
+            // Button has been released.
+            //
+        }
+        prevState = currState;
+    }
+
+    if (driveTankMode)
+    {
+        //
+        // Do tank drive.
+        //
+   }
+    else
+    {
+        //
+        // Do arcade drive.
+        //
+   }
+
+    wait(0.02);
+}
+
+
+
+
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
