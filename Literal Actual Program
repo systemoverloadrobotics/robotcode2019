@@ -1,50 +1,3 @@
-bool prevState = false;
-bool currState = false;
-bool driveTankMode = false;
-
-while (IsOperatorControl())
-{
-    //
-    // Check for button 6 press.
-    //
-    currState = secondaryController->GetRawButton(6);
-    if (currState != prevState)
-    {
-        if (currState)
-        {
-            //
-            // Button has been pressed.
-            //
-            driveTankMode = !driveTankMode;
-        }
-        else
-        {
-            //
-            // Button has been released.
-            //
-        }
-        prevState = currState;
-    }
-
-    if (driveTankMode)
-    {
-        //
-        // Do tank drive.
-        //
-   }
-    else
-    {
-        //
-        // Do arcade drive.
-        //
-   }
-
-    wait(0.02);
-}
-
-
-
-
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -66,27 +19,37 @@ class Robot : public frc::TimedRobot {
  public:
   Robot() {}
 
-  void RobotInit() override {}
+  void RobotInit() override {
+    compressor.Start();
+  };
   void RobotPeriodic() override {}
-  void AutonomousInit() override {}
-  void AutonomousPeriodic() override {}
-
-  void TeleopInit() override {
-  compressor.Start();
-  }
+  void AutonomousInit() override {
+    time.Reset();
+    time.Start();
+  };
+  
+  void AutonomousPeriodic() override {
+  };
+  void TeleopInit() override {}
 
   void TeleopPeriodic() override {
+//Miscelanious
+    //Compressor Toggle(Later Amigo)
+    
+//Drive(Workds)
     //Drivebase(Works)
-    //The * -1 is to inverse motors, and the / 2 is to slow down regular turing and the / 3 if for presicion drive
+    //Want to test /3 for presion turning only
+    //The * -1 is to inverse motors, and the / 2 is to slow down regular turing and the / 2 if for presicion drive
     //the else if statments is mostly likely unneeded, will test with and without so see if it is needed
     // 3 = A button
     if (xbox.GetRawButton(3) == 1) {
       Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1 / 2, xbox.GetRawAxis(0) / 2); 
     } else if (xbox.GetRawButton(3) == 0) { 
-      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1, xbox.GetRawAxis(0) / 2);
+      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1 * .7, xbox.GetRawAxis(0) / 2);
     } else {
-      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1, xbox.GetRawAxis(0) / 2);
+      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1 * .7, xbox.GetRawAxis(0) / 2);
     }
+//HAB Lift(Untested)
     //HAB lift
     //Front(Untested)
     //Using trigger axis for ease of use for operator but idk if the code will work like I have it
@@ -105,10 +68,10 @@ class Robot : public frc::TimedRobot {
     } else {
       s_HABback.Set(frc::DoubleSolenoid::kOff);
     }
-
+//Forklift(Workds)
     //Forlift (Works)
     //POV is 0=UP 90=Right 180=Down 270=Left and 45 for all the angles
-    // the "== 1" might have to be "== 0/180" corresponcding to the angle
+    //.GetPOV("0") is the number for the POV system things switch
     if (arcadePad.GetPOV(0) == 0) {
       m_forklift.Set(.5);
     } else if (arcadePad.GetPOV(0) == 180) {
@@ -116,17 +79,17 @@ class Robot : public frc::TimedRobot {
     } else {
       m_forklift.Set(0);
     }
-    
-    //Ball Intake (Untested)
+//Ball Intake(Works)
+    //Ball Intake (Does not work)
+    //RJ wants this for button layout coherancy
     //This is the button test
-    // / 3 is to small need to change on next upload
     // the / 3 is since one of the motors is currently missing a gearbox but we will have the gear box before comp
     if (arcadePad.GetRawButton(1) == 1) {
-      m_leftIntake.Set(-1 / 3);
-      m_rightIntake.Set(-1);
+      m_leftIntake.Set(-.16);//+
+      m_rightIntake.Set(.5);
     } else if (arcadePad.GetRawButton(3) == 1) {
-      m_leftIntake.Set(1 / 3);
-      m_rightIntake.Set(1);
+      m_leftIntake.Set(.16);
+      m_rightIntake.Set(-.5);
     } else {
       m_leftIntake.Set(0);
       m_rightIntake.Set(0);
@@ -135,11 +98,13 @@ class Robot : public frc::TimedRobot {
     //This is the button/axis test, this is what we want if it works but can use code abouve incase this does not work
     //The button layout with the top code is better than this one so idk what we will use in the end
     //R2 and L2 axis(buttons on physical board)
-    m_leftIntake.Set(arcadePad.GetRawAxis(3) * -1 / 3); //devide 3 only there for now since we don't have the 2nd gearbox
-    m_rightIntake.Set(arcadePad.GetRawAxis(2));
-
+    //m_leftIntake.Set(arcadePad.GetRawAxis(3) * -1 / 3); //divide 3 only there for now since we don't have the 2nd gearbox
+    //m_rightIntake.Set(arcadePad.GetRawAxis(2));
+//Hatch Panel Launcher(Works)
     //Hatch Panel Launcher(Works)
+    //Set for 2 solenoids, still deciding wither it will be 1 or 2 solenoids
     //4 = Y on Qanda Arcade
+    //1
     if (arcadePad.GetRawButton(4) == 1) {
       s_panelLauncher.Set(frc::DoubleSolenoid::kForward);
       s_panelGetter.Set(frc::DoubleSolenoid::kForward);
@@ -150,7 +115,9 @@ class Robot : public frc::TimedRobot {
       s_panelLauncher.Set(frc::DoubleSolenoid::kOff);
       s_panelGetter.Set(frc::DoubleSolenoid::kOff);
     }
+//Slider/Panel Getter(Untested)
     //Slider/Panel Getter(Untested)
+    //Will only used if Hatch Panel uses only 1 solenoids
     /*
     if (arcadePad.GetRawButton(6) == 1) {
       s_panelGetter.Set(frc::DoubleSolenoid::kReverse);
@@ -161,12 +128,13 @@ class Robot : public frc::TimedRobot {
     }
     */
   }
-
+//Private
  private:
   //Declartions
   frc::Joystick xbox{1};
   frc::Joystick arcadePad{2};
   frc::Compressor compressor;
+  frc::Timer time;
   //Motors
   //Drivebase
   frc::PWMVictorSPX m_frontLeft{0};
@@ -188,11 +156,12 @@ class Robot : public frc::TimedRobot {
   //Pneumatics/Solenoids
   //Hatch Panel Launcher
   frc::DoubleSolenoid s_panelLauncher{0, 1};
-  frc::DoubleSolenoid s_panelGetter{2, 3};
+  frc::DoubleSolenoid s_panelGetter{2, 3}; // will have to change this variable and the one above depending on if we have the Getter/Slider or not
   frc::DoubleSolenoid s_HABfront{4, 5};
   frc::DoubleSolenoid s_HABback{6, 7};
 };
 
+//Main
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
 #endif
