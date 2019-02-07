@@ -20,7 +20,7 @@ class Robot : public frc::TimedRobot {
   Robot() {}
 
   void RobotInit() override {
-    compressor.Start();
+    compressor.Stop();
   };
   void RobotPeriodic() override {}
   void AutonomousInit() override {
@@ -43,11 +43,11 @@ class Robot : public frc::TimedRobot {
     //the else if statments is mostly likely unneeded, will test with and without so see if it is needed
     // 3 = A button
     if (xbox.GetRawButton(3) == 1) {
-      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1 / 2, xbox.GetRawAxis(0) / 2); 
+      Drive.ArcadeDrive(sqrt(xbox.GetRawAxis(1)) * -.5, sqrt(xbox.GetRawAxis(0)) * .5); 
     } else if (xbox.GetRawButton(3) == 0) { 
-      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1 * .7, xbox.GetRawAxis(0) / 2);
+      Drive.ArcadeDrive(sqrt(xbox.GetRawAxis(1)) * -.7, sqrt(xbox.GetRawAxis(0)) * .5);
     } else {
-      Drive.ArcadeDrive(xbox.GetRawAxis(1) * -1 * .7, xbox.GetRawAxis(0) / 2);
+      Drive.ArcadeDrive(sqrt(xbox.GetRawAxis(1)) * -.7, sqrt(xbox.GetRawAxis(0)) * .5);
     }
 //HAB Lift(Untested)
     //HAB lift
