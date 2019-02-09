@@ -6,7 +6,15 @@
 /*----------------------------------------------------------------------------*/
 
 
-#include "Vision/ImageProcess.h"
+#include "ImageProcess.h"
+
+//DashBoard
+#include <cameraserver/CameraServer.h>
+#include <frc/TimedRobot.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <wpi/raw_ostream.h>
 
 /**
  * Uses the CameraServer class to automatically capture video from a USB webcam
@@ -268,15 +276,55 @@ void ImageProcess::findLines1(char *filename) {
     imwrite(result, img);
   } 
   
+
+  std::string ImageProcess::getPutTextData(int count){
+      if (count == 1){
+          return "---";
+      }else if (count == 2){
+          return std::to_string(0);
+      }else if(count == 3){
+          return std::to_string(0.3);
+      }else if(count == 4){
+          return std::to_string(0.5);
+      }else if(count == 5){
+          return std::to_string(0.7);
+      }else if(count == 6){
+          return std::to_string(0.9);
+      }else if(count == 7){
+          return std::to_string(1.2);
+      }else if(count == 8){
+          return std::to_string(1.5);
+      }else if(count == 9){
+          return std::to_string(1.7);
+      }else if(count == 10){
+          return std::to_string(2);
+      }else if(count == 11){
+          return std::to_string(2.2) ;
+      }else if(count == 12){
+          return std::to_string(2.4);
+      }else if(count == 13){
+          return std::to_string(2.8);
+      }else if(count == 14){
+          return std::to_string(3.1);
+      }else if(count == 15){
+          return std::to_string(3.4);
+      }else if(count == 16){
+          return std::to_string(3.6);
+      }else {
+          return "-";
+      }
+  }
+
   void ImageProcess::makeGrid(Mat img, int cellSize) {
     
     int dist= cellSize;
     int width= img.size().width;
     int height= img.size().height;
 
+    //b g r
     cv::Scalar lineColor(0, 0, 0, 0);
     cv::Scalar centerColor(0, 0, 255, 0);
-    cv::Scalar textColor(0, 0, 255, 0);
+    cv::Scalar textColor(0, 255, 0, 0);
 
     int midWidth = width /2;
     int midHeight = height /2;
@@ -286,15 +334,25 @@ void ImageProcess::findLines1(char *filename) {
     int count = lineNum;
     for (int bHeigth = midHeight; bHeigth<height; bHeigth += dist) {
       cv::line(img, Point(0, bHeigth), Point(width, bHeigth), lineColor);
-      putText(img, std::to_string(count), cvPoint(midWidth-cellSize*5, bHeigth+dist), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
-      putText(img, std::to_string(count--), cvPoint(midWidth+cellSize*4, bHeigth+dist), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
+      std::string putTextData = getPutTextData(count);//std::to_string(count);
+      /*if (count % 2 == 0 ){
+        putTextData = "";
+      }*/
+      putText(img, putTextData, cvPoint(midWidth-cellSize*7, bHeigth+dist), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
+      putText(img, putTextData, cvPoint(midWidth+cellSize*6, bHeigth+dist), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
+      count = count - 1;
     }
     
     count = ++lineNum;
     for (int uHeight = midHeight; uHeight>0; uHeight -= dist) {
       cv::line(img, Point(0, uHeight), Point(width, uHeight),lineColor);
-      putText(img, std::to_string(count), cvPoint(midWidth-cellSize*5, uHeight), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
-      putText(img, std::to_string(count++), cvPoint(midWidth+cellSize*4, uHeight), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
+      std::string putTextData = std::to_string(count);
+      /*if (count % 2 == 0){
+          putTextData = "";
+      }*/
+      putText(img, putTextData, cvPoint(midWidth-cellSize*7, uHeight), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
+      putText(img, putTextData, cvPoint(midWidth+cellSize*6, uHeight), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
+      count = count + 1;
     }
 
     cv::line(img, Point(0, midHeight), Point(width, midHeight), centerColor,2);
@@ -318,18 +376,51 @@ void ImageProcess::findLines1(char *filename) {
 
   void ImageProcess::RobotInit() {
 
-    VideoCapture cap(0); // open the default camera
+    //Dashboard
+    // Get the USB camera from CameraServer
+    cs::UsbCamera camera =
+        frc::CameraServer::GetInstance()->StartAutomaticCapture();
+    // Set the resolution
+    camera.SetResolution(640, 480);
+
+    // Get a CvSink. This will capture Mats from the Camera
+    cs::CvSink cvSink = frc::CameraServer::GetInstance()->GetVideo();
+    // Setup a CvSource. This will send images back to the Dashboard
+    cs::CvSource outputStream =
+        frc::CameraServer::GetInstance()->PutVideo("Rectangle", 640, 480);
+    //Dashboard END ========
+
+    //---------  Desktop
+    /*VideoCapture cap(0); // open the default camera
     if(!cap.isOpened())  // check if we succeeded
         return;
+    */
+   //---------  Desktop END
 
 
     Mat edges;
     namedWindow("edges",1);
     for(;;) {
       Mat frame;
-      cap >> frame;
-      makeGrid(frame, 20);
-      imshow("edges", frame);
+    
+
+    //Dashboard
+    if (cvSink.GrabFrame(frame) == 0) {
+        // Send the output the error.
+        outputStream.NotifyError(cvSink.GetError());
+        // skip the rest of the current iteration
+        continue;
+    }
+    makeGrid(frame, 20);
+    //========= Dashboard END =====
+
+    //===Desktop
+      //cap >> frame;
+      //makeGrid(frame, 20);
+      //imshow("edges", frame);
+    //===Desktop END 
+
       if(waitKey(30) >= 0) break;
     }   
   }
+
