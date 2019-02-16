@@ -1,11 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-
 #include "ImageProcess.h"
 
 //DashBoard
@@ -275,7 +267,7 @@ void ImageProcess::findLines1(char *filename) {
     drawSquares(img, squares);
     imwrite(result, img);
   } 
-  
+
 
   std::string ImageProcess::getPutTextData(int count){
       if (count == 1){
@@ -316,7 +308,7 @@ void ImageProcess::findLines1(char *filename) {
   }
 
   void ImageProcess::makeGrid(Mat img, int cellSize) {
-    
+
     int dist= cellSize;
     int width= img.size().width;
     int height= img.size().height;
@@ -328,7 +320,7 @@ void ImageProcess::findLines1(char *filename) {
 
     int midWidth = width /2;
     int midHeight = height /2;
-    
+
     int lineNum = (height - midHeight) / dist;
 
     int count = lineNum;
@@ -342,7 +334,7 @@ void ImageProcess::findLines1(char *filename) {
       putText(img, putTextData, cvPoint(midWidth+cellSize*6, bHeigth+dist), CV_FONT_HERSHEY_SIMPLEX, 0.5, textColor, 1, cv::LINE_8);
       count = count - 1;
     }
-    
+
     count = ++lineNum;
     for (int uHeight = midHeight; uHeight>0; uHeight -= dist) {
       cv::line(img, Point(0, uHeight), Point(width, uHeight),lineColor);
@@ -402,7 +394,7 @@ void ImageProcess::findLines1(char *filename) {
     namedWindow("edges",1);
     for(;;) {
       Mat frame;
-    
+
 
     //Dashboard
     if (cvSink.GrabFrame(frame) == 0) {
@@ -423,4 +415,3 @@ void ImageProcess::findLines1(char *filename) {
       if(waitKey(30) >= 0) break;
     }   
   }
-
