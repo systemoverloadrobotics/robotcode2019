@@ -4,9 +4,18 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
+#include <thread>//
 
-#include <frc/Joystick.h>
+#include <iostream>
+#include <frc/PowerDistributionPanel.h>
+#include <cameraserver/CameraServer.h>//
+#include <opencv2/core/core.hpp>//
+#include <opencv2/core/types.hpp>//
+#include <opencv2/imgproc/imgproc.hpp>//
+#include <wpi/raw_ostream.h>//
 #include <frc/TimedRobot.h>
+#include <wpi/raw_ostream.h>//
+#include <frc/Joystick.h>
 #include <frc/Timer.h>
 #include <frc/PWMVictorSPX.h>
 #include <frc/drive/DifferentialDrive.h>
@@ -17,124 +26,118 @@
 
 class Robot : public frc::TimedRobot {
  public:
-  Robot() {}
 
   void RobotInit() override {
-    compressor.Stop();
-  };
-  void RobotPeriodic() override {}
-  void AutonomousInit() override {
-    time.Reset();
-    time.Start();
-  };
-  
-  void AutonomousPeriodic() override {
-  };
-  void TeleopInit() override {}
+  compressor.Start ();
+  frc::CameraServer::GetInstance()->StartAutomaticCapture(0);
+  frc::CameraServer::GetInstance()->StartAutomaticCapture(1);
+  }
+  void RobotPeriodic() override {};
+  void AutonomousInit() override {};
+  void AutonomousPeriodic() override {};
+  void TeleopInit() override {};
 
   void TeleopPeriodic() override {
-//Miscelanious
-    //Compressor Toggle(Later Amigo)
-    
-//Drive(Workds)
-    //Drivebase(Works)
-    //Want to test /3 for presion turning only
-    //The * -1 is to inverse motors, and the / 2 is to slow down regular turing and the / 2 if for presicion drive
-    //the else if statments is mostly likely unneeded, will test with and without so see if it is needed
-    // 3 = A button
-    if (xbox.GetRawButton(3) == 1) {
-      Drive.ArcadeDrive(sqrt(xbox.GetRawAxis(1)) * -.5, sqrt(xbox.GetRawAxis(0)) * .5); 
-    } else if (xbox.GetRawButton(3) == 0) { 
-      Drive.ArcadeDrive(sqrt(xbox.GetRawAxis(1)) * -.7, sqrt(xbox.GetRawAxis(0)) * .5);
+//PDP Current Output
+    //frc::SmartDashboard::PutString(PDP.GetCurrent(0));
+//Compressor "Switch..."
+    if (fightStick.GetRawButton(8) == 1) {
+      compressor.Stop();
     } else {
-      Drive.ArcadeDrive(sqrt(xbox.GetRawAxis(1)) * -.7, sqrt(xbox.GetRawAxis(0)) * .5);
+      compressor.Start();
     }
+  
+//Drive(Works)
+    //Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -.5, flightStick.GetRawAxis(2) * .5, flightStick.GetRawButton(1)); // 0(X) or 2(Z)
+    if (flightStick.GetRawButton(2) == 1) {
+      Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -.7, flightStick.GetRawAxis(2) * .7, flightStick.GetRawButton(1));
+    } else if (flightStick.GetRawButton(2) == 0) { 
+       Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -.5, flightStick.GetRawAxis(2) * .7, flightStick.GetRawButton(1));
+    } else {
+      Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -.5, flightStick.GetRawAxis(2) * .7, flightStick.GetRawButton(1));
+    }
+
 //HAB Lift(Untested)
     //HAB lift
-    //Front(Untested)
-    //Using trigger axis for ease of use for operator but idk if the code will work like I have it
-    if (xbox.GetRawAxis(2) >= .5) {
+    //Font(Untested)
+    if (flightStick.GetRawButton(7) == 1) {
       s_HABfront.Set(frc::DoubleSolenoid::kForward);
-    } else if (xbox.GetRawAxis(2) == 0) {
+    } else if (flightStick.GetRawButton(9) == 0) {
       s_HABfront.Set(frc::DoubleSolenoid::kReverse);
     } else {
       s_HABfront.Set(frc::DoubleSolenoid::kOff);
     }
     //Back(Untested)
-    if (xbox.GetRawAxis(3) >= .5) {
+    if (flightStick.GetRawButton(8) == 1) {
       s_HABback.Set(frc::DoubleSolenoid::kForward);
-    } else if (xbox.GetRawAxis(3) == 0) {
+    } else if (flightStick.GetRawButton(10) == 0) {
       s_HABback.Set(frc::DoubleSolenoid::kReverse);
     } else {
       s_HABback.Set(frc::DoubleSolenoid::kOff);
     }
-//Forklift(Workds)
+
+//Forklift(Works) (B)
     //Forlift (Works)
     //POV is 0=UP 90=Right 180=Down 270=Left and 45 for all the angles
     //.GetPOV("0") is the number for the POV system things switch
-    if (arcadePad.GetPOV(0) == 0) {
-      m_forklift.Set(.5);
-    } else if (arcadePad.GetPOV(0) == 180) {
-      m_forklift.Set(-.5);
+    if (fightStick.GetPOV(0) == 0) {
+      if (fightStick.GetRawButton(5) == 1) {
+        m_forklift.Set(-.5);
+      } else if (fightStick.GetRawButton(5) == 0) {
+        m_forklift.Set(-.4);
+      } else {
+        m_forklift.Set(-.4);
+      }
+    } else if (fightStick.GetPOV(0) == 180) {
+      if (fightStick.GetRawButton(5) == 1) {
+        m_forklift.Set(-.03);
+      } else if (fightStick.GetRawButton(5) == 0) {
+        m_forklift.Set(-.04);
+      } else {
+        m_forklift.Set(-.04);
+      }
     } else {
-      m_forklift.Set(0);
+      if (fightStick.GetRawButton(2) == 1) {
+        m_forklift.Set(-.2);
+      } else {
+        m_forklift.Set(0);
+      }
     }
 //Ball Intake(Works)
-    //Ball Intake (Does not work)
-    //RJ wants this for button layout coherancy
-    //This is the button test
-    // the / 3 is since one of the motors is currently missing a gearbox but we will have the gear box before comp
-    if (arcadePad.GetRawButton(1) == 1) {
-      m_leftIntake.Set(-.16);//+
+    if (fightStick.GetRawButton(1) == 1) {
+      m_leftIntake.Set(-.5);//+
       m_rightIntake.Set(.5);
-    } else if (arcadePad.GetRawButton(3) == 1) {
-      m_leftIntake.Set(.16);
+    } else if (fightStick.GetRawButton(3) == 1) {
+      m_leftIntake.Set(.5);
       m_rightIntake.Set(-.5);
     } else {
       m_leftIntake.Set(0);
       m_rightIntake.Set(0);
     }
-    //(Untested)
-    //This is the button/axis test, this is what we want if it works but can use code abouve incase this does not work
-    //The button layout with the top code is better than this one so idk what we will use in the end
-    //R2 and L2 axis(buttons on physical board)
-    //m_leftIntake.Set(arcadePad.GetRawAxis(3) * -1 / 3); //divide 3 only there for now since we don't have the 2nd gearbox
-    //m_rightIntake.Set(arcadePad.GetRawAxis(2));
+
 //Hatch Panel Launcher(Works)
     //Hatch Panel Launcher(Works)
     //Set for 2 solenoids, still deciding wither it will be 1 or 2 solenoids
     //4 = Y on Qanda Arcade
     //1
-    if (arcadePad.GetRawButton(4) == 1) {
+    if (fightStick.GetRawButton(4) == 0) {
       s_panelLauncher.Set(frc::DoubleSolenoid::kForward);
       s_panelGetter.Set(frc::DoubleSolenoid::kForward);
-    } else if (arcadePad.GetRawButton(4) == 0) {
+    } else if (fightStick.GetRawButton(4) == 1) {
       s_panelLauncher.Set(frc::DoubleSolenoid::kReverse);
       s_panelGetter.Set(frc::DoubleSolenoid::kReverse);
     } else {
       s_panelLauncher.Set(frc::DoubleSolenoid::kOff);
       s_panelGetter.Set(frc::DoubleSolenoid::kOff);
     }
-//Slider/Panel Getter(Untested)
-    //Slider/Panel Getter(Untested)
-    //Will only used if Hatch Panel uses only 1 solenoids
-    /*
-    if (arcadePad.GetRawButton(6) == 1) {
-      s_panelGetter.Set(frc::DoubleSolenoid::kReverse);
-    } else if (arcadePad.GetRawButton(6) == 0) {
-      s_panelGetter.Set(frc::DoubleSolenoid::kForward);
-    } else {
-      s_panelGetter.Set(frc::DoubleSolenoid::kOff);
-    }
-    */
   }
 //Private
  private:
   //Declartions
-  frc::Joystick xbox{1};
-  frc::Joystick arcadePad{2};
+  frc::Joystick fightStick{1};
+  frc::Joystick flightStick{2};
   frc::Compressor compressor;
-  frc::Timer time;
+  frc::PowerDistributionPanel PDP;
   //Motors
   //Drivebase
   frc::PWMVictorSPX m_frontLeft{0};
@@ -160,6 +163,7 @@ class Robot : public frc::TimedRobot {
   frc::DoubleSolenoid s_HABfront{4, 5};
   frc::DoubleSolenoid s_HABback{6, 7};
 };
+
 
 //Main
 #ifndef RUNNING_FRC_TESTS
