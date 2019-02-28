@@ -1,6 +1,0 @@
-include <...>
-include <...>
-include <...>
-include <...>
-
-using namespace frc; (THIS DOES NOT WORK FOR ALL NAME SPACE INSTANTS)
