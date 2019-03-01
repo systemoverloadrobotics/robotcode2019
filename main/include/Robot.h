@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include <vector>
 #include <frc/AnalogInput.h>
 #include <frc/Compressor.h>
 #include <frc/DoubleSolenoid.h>
@@ -21,12 +22,22 @@
 #include <frc/PWMVictorSPX.h>
 #include <frc/Smartdashboard/SendableChooser.h>
 #include <frc/SpeedControllerGroup.h>
-#include <opencv2/core/core.hpp>//
-#include <opencv2/core/types.hpp>//
-#include <opencv2/imgproc/imgproc.hpp>//
-#include <wpi/raw_ostream.h>//
-#include <wpi/raw_ostream.h>//
-#include <cameraserver/CameraServer.h>//
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/opencv.hpp>
+#include <wpi/raw_ostream.h>
+#include <wpi/raw_ostream.h>
+#include <cameraserver/CameraServer.h>
+
+using namepace std;
+
+class ImageProcess : public frc::TimedRobot {
+    void makeGrid(cv::Mat img, int cellSize);
+    cv::Mat makeGrid(char *fileName, char *result);
+    void RobotInit();
+    std::string getPutTextData(int count);
+};
 
 class Robot : public frc::TimedRobot {
  public:
