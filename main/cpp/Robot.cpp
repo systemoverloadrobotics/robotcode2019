@@ -193,14 +193,6 @@ void Robot::TeleopPeriodic() {
 }
 
 void Robot::TestPeriodic() {
-  double count = 0;
-  while (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
-    Drive.CurvatureDrive((flightStick.GetRawAxis(1) / 5) * count, 1, 1);
-    frc::Wait(.01);
-    if (count < 5) {
-      count += .01;// For smoother grow
-    }
-  }
 }
 
 #ifndef RUNNING_FRC_TESTS
