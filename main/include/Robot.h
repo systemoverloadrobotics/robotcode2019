@@ -21,7 +21,7 @@
 #include <frc/Joystick.h>
 #include <frc/PowerDistributionPanel.h>
 #include <frc/PWMVictorSPX.h>
-#include <frc/Smartdashboard/SendableChooser.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/SpeedControllerGroup.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/types.hpp>
@@ -65,7 +65,7 @@ class Robot : public frc::TimedRobot {
   static constexpr double downSpeedNormal = -.04;
   static constexpr double downSpeedFast = -.03;
   //Analog PI (PWM)
-  //frc::AnalogInput input{0};
+  AnalogInput pi{0};
   Joystick fightStick{1};
   Joystick flightStick{2};
   Compressor compressor;
