@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <string>
 #include <iostream>
 #include <thread>
@@ -30,13 +31,16 @@
 #include <wpi/raw_ostream.h>
 #include <cameraserver/CameraServer.h>
 
-using namepace std;
+using namespace std;
+using namespace frc;
+using namespace cv;
+using namespace cs;
 
 class ImageProcess : public frc::TimedRobot {
-    void makeGrid(cv::Mat img, int cellSize);
-    cv::Mat makeGrid(char *fileName, char *result);
+    void makeGrid(Mat img, int cellSize);
+    Mat makeGrid(char *fileName, char *result);
     void RobotInit();
-    std::string getPutTextData(int count);
+    string getPutTextData(int count);
 };
 
 class Robot : public frc::TimedRobot {
@@ -62,21 +66,22 @@ class Robot : public frc::TimedRobot {
   static constexpr double downSpeedFast = -.03;
   //Analog PI (PWM)
   //frc::AnalogInput input{0};
-  frc::Joystick fightStick{1};
-  frc::Joystick flightStick{2};
-  frc::Compressor compressor;
-  frc::PWMVictorSPX m_frontLeft{0};
-  frc::PWMVictorSPX m_backLeft{1};
-  frc::PWMVictorSPX m_frontRight{2};
-  frc::PWMVictorSPX m_backRight{3};
-  frc::PWMVictorSPX m_leftIntake{4}; 
-  frc::PWMVictorSPX m_rightIntake{5};
-  frc::PWMVictorSPX m_forklift{6};
-  frc::SpeedControllerGroup m_left{m_frontLeft, m_backLeft};
-  frc::SpeedControllerGroup m_right{m_frontRight, m_backRight}; 
-  frc::DifferentialDrive Drive{m_left, m_right};
-  frc::DoubleSolenoid s_panelLauncherBottom{0, 1};
-  frc::DoubleSolenoid s_panelLauncherTop{2, 3};
-  frc::DoubleSolenoid s_HABfront{4, 5};
-  frc::DoubleSolenoid s_HABback{6, 7};
+  Joystick fightStick{1};
+  Joystick flightStick{2};
+  Compressor compressor;
+  Timer time;
+  PWMVictorSPX m_frontLeft{0};
+  PWMVictorSPX m_backLeft{1};
+  PWMVictorSPX m_frontRight{2};
+  PWMVictorSPX m_backRight{3};
+  PWMVictorSPX m_leftIntake{4}; 
+  PWMVictorSPX m_rightIntake{5};
+  PWMVictorSPX m_forklift{6};
+  SpeedControllerGroup m_left{m_frontLeft, m_backLeft};
+  SpeedControllerGroup m_right{m_frontRight, m_backRight}; 
+  DifferentialDrive Drive{m_left, m_right};
+  DoubleSolenoid s_panelLauncherBottom{0, 1};
+  DoubleSolenoid s_panelLauncherTop{2, 3};
+  DoubleSolenoid s_HABfront{4, 5};
+  DoubleSolenoid s_HABback{6, 7};
 };
