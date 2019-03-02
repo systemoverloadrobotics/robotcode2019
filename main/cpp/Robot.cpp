@@ -46,11 +46,23 @@ void Robot::AutonomousPeriodic() { //Same code for both Auto and Teleop, can't f
   
 //Drive
   if (flightStick.GetRawButton(2) == 1) { //Slow
-    Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
+      Drive.CurvatureDrive((flightStick.GetRawAxis(1) * pow(time.Get(), 2)) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    } else {
+      time.Reset();
+    }
   } else if (flightStick.GetRawButton(12/*Will Change*/) == 1) { // Fast
-    Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
+      Drive.CurvatureDrive((flightStick.GetRawAxis(1) * pow(time.Get(), 2)) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    } else {
+      time.Reset();
+    }
   } else { //Normal
-    Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+    if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
+      Drive.CurvatureDrive((flightStick.GetRawAxis(1) * pow(time.Get(), 2)) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+    } else {
+      time.Reset();
+    }
   }   
 //HAB Lift(???)
   //Font
@@ -132,12 +144,24 @@ void Robot::TeleopPeriodic() {
   
 //Drive
   if (flightStick.GetRawButton(2) == 1) { //Slow
-    Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
+      Drive.CurvatureDrive((flightStick.GetRawAxis(1) * pow(time.Get(), 2)) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    } else {
+      time.Reset();
+    }
   } else if (flightStick.GetRawButton(12/*Will Change*/) == 1) { // Fast
-    Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
+      Drive.CurvatureDrive((flightStick.GetRawAxis(1) * pow(time.Get(), 2)) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+    } else {
+      time.Reset();
+    }
   } else { //Normal
-    Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
-  }   
+    if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
+      Drive.CurvatureDrive((flightStick.GetRawAxis(1) * pow(time.Get(), 2)) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+    } else {
+      time.Reset();
+    }
+  }    
 //HAB Lift(???)
   //Font
   if (flightStick.GetRawButton(7) == 1) {
