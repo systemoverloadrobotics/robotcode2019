@@ -20,6 +20,7 @@ void Robot::RobotPeriodic() {
   UsbCamera driverCamera = CameraServer::GetInstance()->StartAutomaticCapture(1);
   driverCamera.SetResolution(320, 240);
   floorCamera.SetResolution(640, 480);
+  //The rest of these do not name a specific camera need to fix that
   CvSink cvSink = CameraServer::GetInstance()->GetVideo();
   CvSource outputStream = CameraServer::GetInstance()->PutVideo("Rectangle", 640, 480);
   Mat mat;
