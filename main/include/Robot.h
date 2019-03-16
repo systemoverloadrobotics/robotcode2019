@@ -7,6 +7,8 @@
 
 #pragma once
 
+#define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -64,6 +66,9 @@ class Robot : public frc::TimedRobot {
   static constexpr double upSpeedFast = -.5;
   static constexpr double downSpeedNormal = -.04;
   static constexpr double downSpeedFast = -.03;
+  static constexpr double flywheelIntake = .5;
+  static constexpr double flywheelOutake = .5;
+  static constexpr double f = 10;//Frequancy for acceleration
   //Analog PI (PWM)
   AnalogInput pi{0};
   Joystick fightStick{1};
