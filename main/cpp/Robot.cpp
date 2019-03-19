@@ -9,13 +9,14 @@
 
 #include "Robot.h"
 
+
 void Robot::RobotInit() {
   compressor.Stop ();
+  timer.Start();
 }
 
 void Robot::RobotPeriodic() {
 //Vision
-//CHECK THIS BASIL
   UsbCamera floorCamera = CameraServer::GetInstance()->StartAutomaticCapture(0);
   UsbCamera driverCamera = CameraServer::GetInstance()->StartAutomaticCapture(1);
   driverCamera.SetResolution(320, 240);
@@ -27,11 +28,11 @@ void Robot::RobotPeriodic() {
   while (true) {
     if (cvSink.GrabFrame(mat) == 0) {
         outputStream.NotifyError(cvSink.GetError());
+      }
+      rectangle(mat, Point(100, 100), Point(400, 400), Scalar(255, 255, 255), 5);
+      outputStream.PutFrame(mat);
     }
-    rectangle(mat, Point(100, 100), Point(400, 400), Scalar(255, 255, 255), 5);
-    outputStream.PutFrame(mat);
-    }
-//END OF CHECK THIS BASIL
+
 //Compressor
   if (fightStick.GetRawButton(8) == 1) {
     compressor.Start();
@@ -42,33 +43,33 @@ void Robot::RobotPeriodic() {
 //Drive
   if (flightStick.GetRawButton(2) == 1) { //Slow
     if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
-      if (0<time.Get<(f/2)) {
-        Drive.CurvatureDrive((flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*time.Get()) - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+      if (0<timer.Get()<(f/2)) {
+        Drive.CurvatureDrive(flightStick.GetRawAxis(1) / 2  *sin((((2 * M_PI) / f) * timer.Get() - M_PI_2) + flightStick.GetRawAxis(1) / 2) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       } else {
         Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       }
     } else {
-      time.Reset();
+      timer.Reset();
     }
   } else if (flightStick.GetRawButton(11/*Will Change*/) == 1) { // Fast
     if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
-      if (0<time.Get()<(f/2)) {
-        Drive.CurvatureDrive((flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*time.Get()) - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+      if (0<timer.Get()<(f/2)) {
+        Drive.CurvatureDrive(flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*timer.Get() - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
       } else {
         Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
       }
     } else {
-      time.Reset();
+      timer.Reset();
     }
   } else { //Normal
     if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
-      if (0<time.Get()<(f/2)) {
-        Drive.CurvatureDrive((flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*time.Get()) - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+      if (0<timer.Get()<(f/2)) {
+        Drive.CurvatureDrive(flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*timer.Get() - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       } else {
         Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       }
     } else {
-      time.Reset();
+      timer.Reset();
     }
   }   
 //HAB Lift(???)
@@ -123,7 +124,7 @@ void Robot::RobotPeriodic() {
   }
 
 //Hatch Panel Launcher
-  //They are set backwards if time is avaible would like to switch them around in both the code and wiring
+  //They are set backwards if timerr is avaible would like to switch them around in both the code and wiring
   if (fightStick.GetRawButton(4) == 0) {
     s_panelLauncherBottom.Set(DoubleSolenoid::kForward);
     s_panelLauncherTop.Set(DoubleSolenoid::kForward);
