@@ -15,6 +15,7 @@ void Robot::RobotInit() {
 
 void Robot::RobotPeriodic() {
 //Vision
+//CHECK THIS BASIL
   UsbCamera floorCamera = CameraServer::GetInstance()->StartAutomaticCapture(0);
   UsbCamera driverCamera = CameraServer::GetInstance()->StartAutomaticCapture(1);
   driverCamera.SetResolution(320, 240);
@@ -30,7 +31,7 @@ void Robot::RobotPeriodic() {
       rectangle(mat, Point(100, 100), Point(400, 400), Scalar(255, 255, 255), 5);
       outputStream.PutFrame(mat);
     }
-
+//END OF CHECK THIS BASIL
 //Compressor
   if (fightStick.GetRawButton(8) == 1) {
     compressor.Start();
