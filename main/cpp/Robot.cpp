@@ -27,9 +27,9 @@ void Robot::RobotPeriodic() {
   while (true) {
     if (cvSink.GrabFrame(mat) == 0) {
         outputStream.NotifyError(cvSink.GetError());
-      }
-      rectangle(mat, Point(100, 100), Point(400, 400), Scalar(255, 255, 255), 5);
-      outputStream.PutFrame(mat);
+    }
+    rectangle(mat, Point(100, 100), Point(400, 400), Scalar(255, 255, 255), 5);
+    outputStream.PutFrame(mat);
     }
 //END OF CHECK THIS BASIL
 //Compressor
