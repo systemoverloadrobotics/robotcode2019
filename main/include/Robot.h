@@ -39,13 +39,18 @@ using namespace cv;
 using namespace cs;
 
 class ImageProcess : public frc::TimedRobot {
-    void makeGrid(Mat img, int cellSize);
-    Mat makeGrid(char *fileName, char *result);
-    void RobotInit();
-    string getPutTextData(int count);
+  void makeGrid(Mat img, int cellSize);
+  Mat makeGrid(char *fileName, char *result);
+  void RobotInit();
+  string getPutTextData(int count);
 };
 
 class Robot : public frc::TimedRobot {
+ double acceleration(double input) {
+   double V;
+   V = input / 2 * sin((((2 * M_PI) / f) * timer.Get() - M_PI_2) + input / 2);
+   return V;
+ }
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -74,7 +79,7 @@ class Robot : public frc::TimedRobot {
   Joystick fightStick{1};
   Joystick flightStick{2};
   Compressor compressor;
-  Timer time;
+  Timer timer;
   PWMVictorSPX m_frontLeft{0};
   PWMVictorSPX m_backLeft{1};
   PWMVictorSPX m_frontRight{2};
