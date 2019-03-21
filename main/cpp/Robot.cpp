@@ -9,7 +9,6 @@
 
 #include "Robot.h"
 
-
 void Robot::RobotInit() {
   compressor.Stop ();
   timer.Start();
@@ -44,7 +43,7 @@ void Robot::RobotPeriodic() {
   if (flightStick.GetRawButton(2) == 1) { //Slow
     if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
       if (0<timer.Get()<(f/2)) {
-        Drive.CurvatureDrive(flightStick.GetRawAxis(1) / 2  *sin((((2 * M_PI) / f) * timer.Get() - M_PI_2) + flightStick.GetRawAxis(1) / 2) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+        Drive.CurvatureDrive(acceleration(flightStick.GetRawAxis(1)) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       } else {
         Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedSlow, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       }
@@ -54,7 +53,7 @@ void Robot::RobotPeriodic() {
   } else if (flightStick.GetRawButton(11/*Will Change*/) == 1) { // Fast
     if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
       if (0<timer.Get()<(f/2)) {
-        Drive.CurvatureDrive(flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*timer.Get() - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
+        Drive.CurvatureDrive(acceleration(flightStick.GetRawAxis(1)) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
       } else {
         Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedFast, flightStick.GetRawAxis(2) * turningSpeedFast, flightStick.GetRawButton(1));
       }
@@ -64,7 +63,7 @@ void Robot::RobotPeriodic() {
   } else { //Normal
     if (flightStick.GetRawAxis(1) > 0 || flightStick.GetRawAxis(1) < 0) {
       if (0<timer.Get()<(f/2)) {
-        Drive.CurvatureDrive(flightStick.GetRawAxis(1)/2*sin((((2 * M_PI)/f)*timer.Get() - M_PI_2)+flightStick.GetRawAxis(1)/2) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
+        Drive.CurvatureDrive(acceleration(flightStick.GetRawAxis(1)) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       } else {
         Drive.CurvatureDrive(flightStick.GetRawAxis(1) * -1 * speedNormal, flightStick.GetRawAxis(2) * turningSpeedSlow, flightStick.GetRawButton(1));
       }
