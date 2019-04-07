@@ -38,19 +38,13 @@ using namespace frc;
 using namespace cv;
 using namespace cs;
 
-class ImageProcess : public frc::TimedRobot {
-  void makeGrid(Mat img, int cellSize);
-  Mat makeGrid(char *fileName, char *result);
-  void RobotInit();
-  string getPutTextData(int count);
-};
-
 class Robot : public frc::TimedRobot {
- double acceleration(double input) {
+ /*double acceleration (double input) {
    double V;
-   V = input / 2 * sin((((2 * M_PI) / f) * timer.Get() - M_PI_2) + input / 2);
+   V = input / 2 * sin(((2 * M_PI) / 6) * timer.Get() - M_PI_2) + input / 2;
    return V;
- }
+ }*/
+ 
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -61,23 +55,9 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
  private:
-  static constexpr double turningSpeedFast = .7;
-  static constexpr double turningSpeedSlow = .5;
-  static constexpr double speedFast = 1;
-  static constexpr double speedNormal = .7;
-  static constexpr double speedSlow = .5;
-  static constexpr double stall = -.2;
-  static constexpr double upSpeedNormal = -.4;
-  static constexpr double upSpeedFast = -.5;
-  static constexpr double downSpeedNormal = -.04;
-  static constexpr double downSpeedFast = -.03;
-  static constexpr double flywheelIntake = .5;
-  static constexpr double flywheelOutake = .5;
-  static constexpr double f = 10;//Frequancy for acceleration
-  //Analog PI (PWM)
   AnalogInput pi{0};
-  Joystick fightStick{1};
-  Joystick flightStick{2};
+  Joystick fightStick{2};
+  Joystick flightStick{1};
   Compressor compressor;
   Timer timer;
   PWMVictorSPX m_frontLeft{0};
