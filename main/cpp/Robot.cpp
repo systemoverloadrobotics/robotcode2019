@@ -74,7 +74,11 @@ void Robot::RobotPeriodic() {
   } else {
     Drive.ArcadeDrive(flightStick.GetRawAxis(1) * -.7, flightStick.GetRawAxis(0) * .7);
   }
-
+/*Forklift Auto
+  if (fightStick.GetRawButton(X) == 1) { //change here lmao loser
+    for(int i; i > time.Get(10)
+  } else {
+  } */
 
 //timer.HasPeriodPassed(5)
   
@@ -143,11 +147,14 @@ void Robot::RobotPeriodic() {
   }*/
      
 //Ball Intake
-  if (fightStick.GetRawButton(1) == 1) {
+  if((fightStick.GetRawButton(1) == 1) && (fightStick.GetRawButton(X) == 1)) {//determine what x is
+    m_leftIntake.Set(-1); //if inttake is fast, switch right and left intake with each other
+    m_rightIntake.Set(1);
+  } else if (fightStick.GetRawButton(1) == 1) {
     m_leftIntake.Set(.5);//+
-    m_rightIntake.Set(-1 * .5);
+    m_rightIntake.Set(-.5);
   } else if (fightStick.GetRawButton(3) == 1) {
-    m_leftIntake.Set(-1 * .5);
+    m_leftIntake.Set(-.5);
     m_rightIntake.Set(.5);
   } else {
     m_leftIntake.Set(0);
