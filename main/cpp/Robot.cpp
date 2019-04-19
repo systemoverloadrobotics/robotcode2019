@@ -7,6 +7,7 @@
 
 //320x240 might help with frames per second, reddit user said they got around 20-30 fps instead of our ~4 fps
 
+bool isPressed = false;
 #include "Robot.h"
 
 void Robot::RobotInit() {
@@ -160,7 +161,15 @@ void Robot::RobotPeriodic() {
     m_leftIntake.Set(0);
     m_rightIntake.Set(0);
   }
-
+// defense system
+  if(fightStick.GetRawAxis(2) == 1)
+  {
+    for(int i = 0; i < kdnf; i++)
+    {
+      
+    }
+  }
+  
 //Hatch Panel Launcher
   //They are set backwards if timerr is avaible would like to switch them around in both the code and wiring
   if (fightStick.GetRawButton(4) == 0) {
