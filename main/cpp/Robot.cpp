@@ -166,7 +166,7 @@ void Robot::RobotPeriodic() {
   {
     for(int i = 0; i < kdnf; i++)
     {
-      
+     double xVal = accel.GetX(); 
     }
   }
   
