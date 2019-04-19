@@ -61,6 +61,8 @@ class Robot : public frc::TimedRobot {
   Joystick flightStick{1};
   Compressor compressor;
   Timer timer;
+  Accelerometer accel;
+  accel = new BuiltInAccelerometer(Accelerometer:kRange_16G); 
   PWMVictorSPX m_frontLeft{0};
   PWMVictorSPX m_backLeft{1};
   PWMVictorSPX m_frontRight{2};
@@ -75,4 +77,5 @@ class Robot : public frc::TimedRobot {
   DoubleSolenoid s_panelLauncherTop{2, 3};
   DoubleSolenoid s_HABfront{4, 5};
   DoubleSolenoid s_HABback{6, 7};
+
 };
