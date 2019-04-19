@@ -32,6 +32,7 @@
 #include <wpi/raw_ostream.h>
 #include <wpi/raw_ostream.h>
 #include <cameraserver/CameraServer.h>
+#include <Accelerometer.h>
 
 using namespace std;
 using namespace frc;
