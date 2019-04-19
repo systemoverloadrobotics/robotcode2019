@@ -162,12 +162,22 @@ void Robot::RobotPeriodic() {
     m_rightIntake.Set(0);
   }
 // defense system
-  if(fightStick.GetRawAxis(2) == 1)
+  if(fightStick.GetRawAxis(2) == 1) //no promisesz
   {
-    for(int i = 0; i < kdnf; i++)
+    isPressed = true;
+    while(isPressed == true)
     {
-     double xVal = accel.GetX(); 
+      m_left.Set(accel.GetX());//One of these needs to be negative... 
+      m_right.Set(accel.GetX());
+      if(fightStick.GetRawAxis(2) == 0)
+      {
+        isPressed = false;
+      }
     }
+  }
+  else
+  {
+    isPressed = false;
   }
   
 //Hatch Panel Launcher
